@@ -331,16 +331,10 @@ function uid() {
   return `${Math.random().toString(36).slice(2, 8)}${Date.now().toString(36).slice(-4)}`;
 }
 
-function titleCase(value: string) {
-  return value.replace(/\w\S*/g, (word) => {
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-  });
-}
-
 function productName(brief: string) {
-  const bit = brief.split(/[,.:;—–-]/)[0]?.trim() || brief;
-  const named = titleCase(bit);
-  return named.length > 42 ? `${named.slice(0, 40)}…` : named;
+  const bit = brief.split(/[,.;:!?]/)[0]?.trim() || brief;
+  const named = bit.charAt(0).toUpperCase() + bit.slice(1);
+  return named.length > 48 ? `${named.slice(0, 46)}…` : named;
 }
 
 function pick<T>(rand: () => number, items: readonly T[]): T {

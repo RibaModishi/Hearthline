@@ -31,7 +31,6 @@ import {
   setHeld,
   setLinePaused,
   setSelected,
-  stageFraction,
   tick,
   type FloorState,
   type LineId,
@@ -184,19 +183,20 @@ export function WorksApp() {
 
           {head ? (
             <div className="rounded-lg border bg-background/40 p-3">
-              <p className="text-xs text-muted-foreground">{head.fault ? "Jammed" : STAGES[head.stageIndex].label}</p>
+              <p className="text-xs text-muted-foreground">
+                {head.fault ? "Stalled during pack" : STAGES[head.stageIndex].label}
+              </p>
               <p className="mt-1 text-sm">{head.brief}</p>
               <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full bg-primary transition-[width]"
-                  style={{ width: `${Math.round(overallProgress(head, now) * 100)}%` }}
+                  className="h-full bg-primary"
+                  style={{ width: `${head.fault ? 100 : Math.round(overallProgress(head, now) * 100)}%` }}
                 />
               </div>
               <ol className="mt-2 grid grid-cols-4 gap-1 text-[10px] text-muted-foreground">
                 {STAGES.map((stage, index) => (
-                  <li key={stage.id} className={index === head.stageIndex ? "text-foreground" : undefined}>
+                  <li key={stage.id} className={index <= head.stageIndex ? "text-foreground" : undefined}>
                     {stage.label}
-                    {index === head.stageIndex ? ` ${Math.round(stageFraction(head, now) * 100)}%` : ""}
                   </li>
                 ))}
               </ol>
