@@ -15,6 +15,17 @@ npm run dev
 
 Open [http://127.0.0.1:4317](http://127.0.0.1:4317).
 
-The floor remembers briefs, the dock, and holds in `localStorage`. **Reset sample** brings back the six starter briefs.
+The floor remembers briefs, the dock, and holds in `localStorage`. **Reset sample** brings back the eight starter briefs.
+
+Open a finished piece and take the file. Printworks and the label rooms save SVG. Frames and the sprite bay save PNG. Vibes saves a WAV loop. The gazette and research notes save text.
 
 A brief that contains the word “jam” stalls while packing, so the retry path is easy to find.
+
+## Production
+
+```bash
+npm run build
+npm start
+```
+
+The production server listens on [http://127.0.0.1:4317](http://127.0.0.1:4317).

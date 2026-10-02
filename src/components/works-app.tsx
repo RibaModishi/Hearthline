@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { FloorCanvas } from "@/components/floor-canvas";
+import { downloadPiece, fileLabel } from "@/lib/files";
 import { PieceView } from "@/components/piece-view";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -345,7 +346,7 @@ export function WorksApp() {
                     >
                       <span className="block text-sm">{piece.artifact.title}</span>
                       <span className="text-xs text-muted-foreground">
-                        {owner.name} · {owner.agent} · {clock(piece.finishedAt)}
+                        {owner.name} · {owner.agent} · {fileLabel(piece)} · {clock(piece.finishedAt)}
                       </span>
                     </button>
                   </li>
@@ -357,7 +358,7 @@ export function WorksApp() {
       </main>
 
       <footer className="mx-auto w-full max-w-6xl px-4 pb-8 text-xs leading-relaxed text-muted-foreground">
-        A bright border is the zone you are commanding. Dots leave a trail while they work. A brief containing the word “jam” stalls the pack so you can retry it.
+        A bright border is the zone you are commanding. Open a finished piece and take the file: posters and labels save as SVG, frames and sprites as PNG, loops as WAV, notes as text. A brief containing the word “jam” stalls the pack so you can retry it.
       </footer>
 
       <Sheet open={openPiece != null} onOpenChange={(open) => { if (!open) setOpenId(null); }}>
@@ -370,8 +371,11 @@ export function WorksApp() {
                   {lineById(openPiece.lineId).name} · from “{openPiece.brief}”
                 </SheetDescription>
               </SheetHeader>
-              <div className="px-4 pb-6">
+              <div className="grid gap-4 px-4 pb-6">
                 <PieceView piece={openPiece} />
+                <Button type="button" onClick={() => void downloadPiece(openPiece)}>
+                  Take the {fileLabel(openPiece).toLowerCase()}
+                </Button>
               </div>
             </>
           ) : null}

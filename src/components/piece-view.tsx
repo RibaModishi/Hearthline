@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { paintMarquee, paintSprites } from "@/lib/files";
 import {
   lineById,
   type BoothArtifact,
@@ -225,39 +226,7 @@ function MarqueeView({ artifact }: { artifact: MarqueeArtifact }) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const [bg, ink, accent] = artifact.colors;
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = accent;
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(180, 0);
-    ctx.lineTo(0, 140);
-    ctx.fill();
-    ctx.fillStyle = ink;
-    ctx.font = "600 13px ui-monospace, monospace";
-    ctx.fillText(artifact.kicker, 28, 48);
-    ctx.font = "700 34px Georgia, serif";
-    const words = artifact.headline.split(" ");
-    const lines: string[] = [];
-    let current = "";
-    for (const word of words) {
-      const test = current ? `${current} ${word}` : word;
-      if (ctx.measureText(test).width > 420 && current) {
-        lines.push(current);
-        current = word;
-      } else {
-        current = test;
-      }
-    }
-    if (current) lines.push(current);
-    lines.slice(0, 3).forEach((line, index) => {
-      ctx.fillText(line, 28, 100 + index * 40);
-    });
-    ctx.globalAlpha = 0.8;
-    ctx.font = "16px Georgia, serif";
-    ctx.fillText(artifact.sub, 28, 250);
-    ctx.globalAlpha = 1;
+    paintMarquee(ctx, artifact);
   }, [artifact]);
 
   return <canvas ref={ref} width={640} height={360} className="w-full rounded-md" aria-label={artifact.headline} />;
@@ -270,19 +239,7 @@ function SpriteView({ artifact }: { artifact: SpriteArtifact }) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    ctx.imageSmoothingEnabled = false;
-    ctx.fillStyle = "#14120e";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    artifact.sprites.forEach((sprite, index) => {
-      const originX = 16 + index * 56;
-      sprite.pixels.forEach((row, y) => {
-        row.forEach((value, x) => {
-          if (!value) return;
-          ctx.fillStyle = sprite.palette[value] ?? "#fff";
-          ctx.fillRect(originX + x * 3, 18 + y * 3, 3, 3);
-        });
-      });
-    });
+    paintSprites(ctx, artifact);
   }, [artifact]);
 
   return (
