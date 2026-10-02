@@ -47,7 +47,7 @@ export function FloorCanvas({
   }, []);
 
   return (
-    <div className="rounded-xl border border-[#6b4a2e] bg-[#14110e] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+    <div className="rounded-md border border-[#1f8a4c]/70 bg-[#03110a] p-2 shadow-[0_0_40px_rgba(80,255,120,0.08)]">
       <div className="relative">
         <canvas
           ref={canvasRef}
@@ -67,7 +67,7 @@ export function FloorCanvas({
               aria-pressed={selected}
               aria-label={`${line.name}, ${line.agent}, ${STATUS_LABEL[activity]}`}
               onClick={() => onSelect(line.id)}
-              className="absolute rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f0c36a]"
+              className="absolute rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8ff8a]"
               style={{
                 left: `${(room.x / WORLD_W) * 100}%`,
                 top: `${(room.y / WORLD_H) * 100}%`,
@@ -75,7 +75,7 @@ export function FloorCanvas({
                 height: `${(room.h / WORLD_H) * 100}%`,
               }}
             >
-              <span className="pointer-events-none absolute top-1 left-1 bg-black/55 px-1 font-pixel text-[8px] leading-tight text-[#f6e7c1] sm:text-[10px]">
+              <span className="pointer-events-none absolute top-1 left-1 bg-black/70 px-1 text-[8px] leading-tight tracking-wide text-[#c8ffb0] uppercase sm:text-[10px]">
                 {line.name}
               </span>
             </button>

@@ -1,26 +1,21 @@
 import type { Metadata } from "next";
-import { Instrument_Sans, Silkscreen } from "next/font/google";
+import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const instrument = Instrument_Sans({
+const mono = IBM_Plex_Mono({
   subsets: ["latin"],
+  weight: ["400", "500"],
   variable: "--font-instrument",
 });
 
-const pixel = Silkscreen({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-pixel-face",
-});
-
 export const metadata: Metadata = {
-  title: "Hearthline",
-  description: "A mill you can watch. Six specialist lines carry briefs from intake to the dock.",
+  title: "Hearthline — Production Terminal",
+  description: "A production terminal where six zones carry briefs to the dock and tally autonomous output in the browser.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${instrument.variable} ${pixel.variable} dark h-full antialiased`}>
+    <html lang="en" className={`${mono.variable} dark h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

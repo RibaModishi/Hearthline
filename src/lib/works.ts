@@ -426,6 +426,27 @@ export function jobsFor(state: FloorState, lineId: LineId) {
   return state.jobs.filter((job) => job.lineId === lineId);
 }
 
+export function pieceValue(piece: Piece) {
+  const base =
+    piece.artifact.kind === "press"
+      ? piece.artifact.price
+      : piece.artifact.kind === "marquee"
+        ? 40
+        : piece.artifact.kind === "sprites"
+          ? 30
+          : piece.artifact.kind === "spotlight"
+            ? 22
+            : piece.artifact.kind === "booth"
+              ? 18
+              : 8;
+  const cents = (hashString(piece.id) % 100) / 100;
+  return Math.round((base + cents) * 100) / 100;
+}
+
+export function autonomousOutput(dock: Piece[]) {
+  return Math.round(dock.reduce((sum, piece) => sum + pieceValue(piece), 0) * 100) / 100;
+}
+
 function creature(rand: () => number): SpriteSheet {
   const pixels = Array.from({ length: 12 }, () => Array(12).fill(0));
   const fills = ["#e07a3d", "#3d6adf", "#1f8a4c", "#a32048", "#d0a0ff", "#e2b15a", "#2ec4b6"];
@@ -623,7 +644,7 @@ export function createSample(now: number): FloorState {
         id: "boot",
         at: now,
         lineId: "press",
-        text: "Lamps are up. Six lines are already carrying the sample briefs.",
+        text: "Terminal is up. Six zones are already carrying the sample briefs.",
       },
     ],
     selected: "press",

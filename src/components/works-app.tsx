@@ -16,6 +16,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import {
   STAGES,
+  autonomousOutput,
   clearDock,
   createSample,
   enqueue,
@@ -23,6 +24,7 @@ import {
   lineActivity,
   lineById,
   loadState,
+  pieceValue,
   narration,
   overallProgress,
   removeJob,
@@ -57,7 +59,7 @@ function FloorSkeleton() {
         <div className="aspect-[384/240] animate-pulse rounded-xl bg-card" />
         <div className="h-80 animate-pulse rounded-xl bg-card" />
       </div>
-      <p className="text-sm text-muted-foreground">Lighting the lamps…</p>
+      <p className="text-sm text-muted-foreground">Bringing the terminal up…</p>
     </main>
   );
 }
@@ -97,6 +99,8 @@ export function WorksApp() {
   const head = queue[0];
   const openPiece = state.dock.find((piece) => piece.id === openId) ?? null;
   const moving = LINES_MOVING(state);
+  const output = autonomousOutput(state.dock);
+  const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(output);
   const dockNote =
     state.dock.length === 0 && state.jobs.length > 0
       ? "Nothing has finished yet. The belts are still carrying the sample briefs."
@@ -119,24 +123,30 @@ export function WorksApp() {
   }
 
   return (
-    <div className="min-h-full bg-[radial-gradient(ellipse_at_top,rgba(232,165,75,0.14),transparent_52%)]">
+    <div className="crt min-h-full">
       <header className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 pt-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="font-pixel text-[10px] text-[#e8a54b]">A MILL YOU CAN WATCH</p>
-          <h1 className="font-pixel text-xl text-foreground sm:text-2xl">Hearthline</h1>
+          <p className="text-[10px] tracking-[0.22em] text-primary">HEARTHLINE</p>
+          <h1 className="text-xl tracking-wide text-foreground sm:text-2xl">PRODUCTION TERMINAL</h1>
           <p className="mt-1 max-w-xl text-sm leading-relaxed text-muted-foreground">
-            Six rooms, six belts. Drop a brief and follow it from intake to the dock. Every piece is made in this browser.
+            Six zones on one map. A brief rides the belt to the dock, and the tally on this screen is the only ledger.
           </p>
         </div>
+        <div className="rounded-md border bg-card/80 px-4 py-3">
+          <p className="text-[10px] tracking-[0.18em] text-primary">AUTONOMOUS OUTPUT</p>
+          <p className="text-3xl leading-none text-foreground">{money}</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {state.dock.length === 1 ? "1 piece" : `${state.dock.length} pieces`} · {moving} live
+          </p>
+          <p className="mt-1 max-w-xs text-xs text-muted-foreground">Priced on this terminal. Nothing is listed for sale.</p>
+        </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="secondary">{moving} moving</Badge>
-          <Badge variant="outline">{state.dock.length} on the dock</Badge>
           <Button
             type="button"
             variant="secondary"
             onClick={() => setState((current) => (current ? setHeld(current, !current.held, Date.now()) : current))}
           >
-            {state.held ? "Run the floor" : "Hold the floor"}
+            {state.held ? "Resume output" : "Halt output"}
           </Button>
           <Button
             type="button"
@@ -160,10 +170,37 @@ export function WorksApp() {
             {narration(state, line.id)}
           </p>
           <p className="text-sm leading-relaxed text-foreground/90">{narration(state, line.id)}</p>
+          <div>
+            <p className="text-[10px] tracking-[0.18em] text-primary">PRODUCTION CAMERAS</p>
+            {state.dock.length === 0 ? (
+              <p className="mt-2 text-sm text-muted-foreground">The four cameras fill in when the first piece hits the dock.</p>
+            ) : (
+              <ul className="mt-2 grid grid-cols-2 gap-2">
+                {state.dock.slice(0, 4).map((piece) => {
+                  const owner = lineById(piece.lineId);
+                  return (
+                    <li key={piece.id}>
+                      <button
+                        type="button"
+                        onClick={() => setOpenId(piece.id)}
+                        className="flex h-full w-full flex-col justify-between rounded-md border bg-black/30 px-3 py-2 text-left hover:bg-muted"
+                      >
+                        <span className="text-[10px] tracking-wide text-primary uppercase">{owner.name}</span>
+                        <span className="mt-2 line-clamp-2 text-sm">{piece.artifact.title}</span>
+                        <span className="mt-2 text-xs text-muted-foreground">
+                          {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(pieceValue(piece))}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
           <ul className="grid max-h-28 gap-1 overflow-auto text-xs text-muted-foreground">
-            {state.log.slice(0, 6).map((entry) => (
+            {state.log.slice(0, 8).map((entry) => (
               <li key={entry.id}>
-                <span className="text-foreground/70">{clock(entry.at)}</span> {entry.text}
+                <span className="text-primary/80">{clock(entry.at)}</span> {entry.text}
               </li>
             ))}
           </ul>
@@ -172,7 +209,7 @@ export function WorksApp() {
         <section className="flex flex-col gap-4 rounded-xl border bg-card p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h2 className="font-pixel text-sm">{line.name}</h2>
+              <h2 className="text-sm tracking-[0.16em] uppercase">{line.name}</h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 {line.agent} · {line.role}
               </p>
@@ -306,7 +343,7 @@ export function WorksApp() {
       </main>
 
       <footer className="mx-auto w-full max-w-6xl px-4 pb-8 text-xs leading-relaxed text-muted-foreground">
-        A lit bench means that line is in a stage. Parcels ride the belt toward the dock. A brief containing the word “jam” stalls the pack so you can retry it.
+        A bright border is the zone you are commanding. Dots leave a trail while they work. A brief containing the word “jam” stalls the pack so you can retry it.
       </footer>
 
       <Sheet open={openPiece != null} onOpenChange={(open) => { if (!open) setOpenId(null); }}>

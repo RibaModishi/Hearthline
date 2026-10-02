@@ -1,10 +1,10 @@
 # Hearthline
 
-A small mill you can watch. Six specialists keep work moving on belts: print goods, a music loop, a title frame, a sprite bundle, a gazette, and a set of short notices.
+A production terminal you can watch. Six zones sit on one map. Specialists carry briefs along belts — print goods, a music loop, a title frame, a sprite bundle, a gazette, and a set of short notices — and finished pieces show up on the cameras.
 
-Drop a brief on a line and follow it through intake, draft, make, and pack. Finished pieces land on the dock. Music loops play in the browser. Nothing is sent to a server, and no API key is required.
+The autonomous output tally is the sum of prices on this screen. Nothing is listed for sale, and nothing leaves the browser.
 
-This is an original floor inspired by the idea in [@androo.agi’s “AI Ecosystem Tour”](https://www.instagram.com/reel/Dd7XBExRZQy/) — factory rooms and conveyor belts you can see working — built as a self-contained web app.
+This is an original terminal inspired by [@androo.agi’s “AI Ecosystem Tour”](https://www.instagram.com/reel/Dd7XBExRZQy/): a zone map, a camera grid, a green log, and a running output figure.
 
 ## Run it
 
