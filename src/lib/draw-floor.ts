@@ -29,26 +29,27 @@ export function drawFloor(ctx: CanvasRenderingContext2D, state: FloorState, now:
   for (let x = 0; x < WORLD_W; x += 8) ctx.fillRect(x, 0, 1, WORLD_H);
   for (let y = 0; y < WORLD_H; y += 8) ctx.fillRect(0, y, WORLD_W, 1);
 
+  const spineX = 208;
   ctx.fillStyle = "#124a2c";
-  ctx.fillRect(190, 16, 3, 208);
+  ctx.fillRect(spineX, 16, 3, WORLD_H - 32);
   for (const line of LINES) {
     const room = ROOMS[line.id];
     const midY = room.y + Math.floor(room.h / 2);
-    const fromLeft = room.x > 200;
-    const x0 = fromLeft ? 193 : room.x + room.w;
-    const x1 = fromLeft ? room.x : 193;
+    const fromLeft = room.x > spineX;
+    const x0 = fromLeft ? spineX + 3 : room.x + room.w;
+    const x1 = fromLeft ? room.x : spineX;
     ctx.fillRect(Math.min(x0, x1), midY, Math.abs(x1 - x0), 2);
   }
-  const pulse = Math.floor((time / 30) % 200);
+  const pulse = Math.floor((time / 28) % (WORLD_H - 40));
   ctx.fillStyle = "#c8ff8a";
-  ctx.fillRect(189, 18 + pulse, 5, 4);
+  ctx.fillRect(spineX - 1, 18 + pulse, 5, 4);
 
   ctx.fillStyle = "#062015";
-  ctx.fillRect(168, 96, 48, 28);
-  frame(ctx, 168, 96, 48, 28, "#7dff6a", 1);
+  ctx.fillRect(spineX - 22, 142, 48, 28);
+  frame(ctx, spineX - 22, 142, 48, 28, "#7dff6a", 1);
   ctx.fillStyle = "#1f8a4c";
   for (let i = 0; i < Math.min(4, state.dock.length); i += 1) {
-    ctx.fillRect(174 + (i % 4) * 9, 108, 6, 8);
+    ctx.fillRect(spineX - 16 + (i % 4) * 9, 154, 6, 8);
   }
 
   for (const line of LINES) {

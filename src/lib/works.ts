@@ -1,10 +1,12 @@
 export const LINE_IDS = [
   "press",
+  "candles",
+  "supplements",
   "booth",
-  "marquee",
   "sprites",
+  "marquee",
   "gazette",
-  "spotlight",
+  "research",
 ] as const;
 
 export type LineId = (typeof LINE_IDS)[number];
@@ -49,10 +51,10 @@ const clip = (brief: string) => {
 export const LINES: LineDef[] = [
   {
     id: "press",
-    name: "Press",
+    name: "Printworks",
     agent: "Nia",
     role: "Print goods",
-    blurb: "Towels, cards, and small editions. The sheet hits the belt when the ink is dry.",
+    blurb: "Towels, cards, and small editions. The sheet is designed on this bench. It is not listed for sale.",
     sample: "linen tea towels, indigo stripe, sold in pairs",
     placeholder: "linen tea towels, indigo stripe, sold in pairs",
     colors: {
@@ -74,10 +76,10 @@ export const LINES: LineDef[] = [
   },
   {
     id: "booth",
-    name: "Booth",
+    name: "Vibes",
     agent: "Sol",
     role: "Music sketches",
-    blurb: "A short loop: kick, hat, and a bass line you can play back.",
+    blurb: "Sol records a loop you can play. No streaming account is connected.",
     sample: "night train in a minor key, unhurried",
     placeholder: "night train in a minor key, unhurried",
     colors: {
@@ -99,12 +101,12 @@ export const LINES: LineDef[] = [
   },
   {
     id: "marquee",
-    name: "Marquee",
+    name: "Frames",
     agent: "Remy",
-    role: "Title frames",
-    blurb: "One bold frame for a film, a firing, or a shop window.",
-    sample: "dusk firing at the kiln, bold type",
-    placeholder: "dusk firing at the kiln, bold type",
+    role: "Thumbnail frames",
+    blurb: "One bold thumbnail from a title. Remy paints it here. Nobody is billed.",
+    sample: "how the night kiln is fired, bold type",
+    placeholder: "how the night kiln is fired, bold type",
     colors: {
       wall: "#7a3148",
       floor: "#e0b2b4",
@@ -173,28 +175,78 @@ export const LINES: LineDef[] = [
     ],
   },
   {
-    id: "spotlight",
-    name: "Spotlight",
-    agent: "Hart",
-    role: "Short notices",
-    blurb: "Three captions and a four-frame storyboard for something you want seen.",
-    sample: "three notes about the dusk firing",
-    placeholder: "three notes about the dusk firing",
+    id: "candles",
+    name: "Candle hall",
+    agent: "Wynn",
+    role: "Candle labels",
+    blurb: "A label for scent, wax, and burn time. The candle is a picture, not a listing.",
+    sample: "cedar and smoke, soy wax, evening burn",
+    placeholder: "cedar and smoke, soy wax, evening burn",
     colors: {
-      wall: "#5c3d78",
-      floor: "#cbb6dc",
-      board: "#b9a2ce",
-      trim: "#322044",
-      parcel: "#d0a0ff",
-      hair: "#241628",
-      cloth: "#7a45a8",
-      skin: "#f0c6aa",
+      wall: "#8a5a28",
+      floor: "#e7c27a",
+      board: "#d4ae62",
+      trim: "#4a3014",
+      parcel: "#f0b429",
+      hair: "#3a2414",
+      cloth: "#c47a20",
+      skin: "#f0c2a0",
     },
     stageLines: [
-      (b) => `Hart frames “${clip(b)}” as three notices.`,
-      () => "Hart writes the captions out loud.",
-      () => "Hart blocks four frames on the board.",
-      () => "Hart clips the set and lays it on the dock.",
+      (b) => `Wynn reads “${clip(b)}” and names the scent.`,
+      () => "Wynn picks wax and a burn window.",
+      () => "Wynn draws the label.",
+      () => "Wynn sleeves the label and sends it to the dock.",
+    ],
+  },
+  {
+    id: "supplements",
+    name: "Tin room",
+    agent: "Ash",
+    role: "Tin labels",
+    blurb: "A tin label only. This room does not make a supplement you can take.",
+    sample: "citrus peel tin, evening, label only",
+    placeholder: "citrus peel tin, evening, label only",
+    colors: {
+      wall: "#2a6b62",
+      floor: "#9fd0c4",
+      board: "#87bfb2",
+      trim: "#143832",
+      parcel: "#3ddec4",
+      hair: "#102824",
+      cloth: "#1c7a6e",
+      skin: "#f0c8a8",
+    },
+    stageLines: [
+      (b) => `Ash sketches a tin for “${clip(b)}”.`,
+      () => "Ash writes the front and refuses a health claim.",
+      () => "Ash paints the label.",
+      () => "Ash files the tin art on the dock.",
+    ],
+  },
+  {
+    id: "research",
+    name: "Research",
+    agent: "Quill",
+    role: "Briefs",
+    blurb: "Quill reads a niche and hands a tighter brief to the room that should make it.",
+    sample: "study linen prints, then brief the printworks",
+    placeholder: "study linen prints, then brief the printworks",
+    colors: {
+      wall: "#3d5a8a",
+      floor: "#b7c7e6",
+      board: "#a3b6d8",
+      trim: "#1c2c4a",
+      parcel: "#8eb6ff",
+      hair: "#1a2030",
+      cloth: "#2f5fbf",
+      skin: "#f0c8a4",
+    },
+    stageLines: [
+      (b) => `Quill opens “${clip(b)}” and looks for the room that fits.`,
+      () => "Quill cuts the brief down to material and mood.",
+      () => "Quill writes the handoff.",
+      () => "Quill walks the note to that room's belt.",
     ],
   },
 ];
@@ -261,13 +313,43 @@ export type SpotlightArtifact = {
   frames: { label: string; color: string }[];
 };
 
+export type CandleArtifact = {
+  kind: "candles";
+  title: string;
+  scent: string;
+  wax: string;
+  burn: string;
+  price: number;
+  colors: [string, string, string];
+};
+
+export type TinArtifact = {
+  kind: "supplements";
+  title: string;
+  front: string;
+  note: string;
+  price: number;
+  colors: [string, string, string];
+};
+
+export type ResearchArtifact = {
+  kind: "research";
+  title: string;
+  findings: string[];
+  handoff: string;
+  routedTo: LineId;
+};
+
 export type Artifact =
   | PressArtifact
   | BoothArtifact
   | MarqueeArtifact
   | SpriteArtifact
   | GazetteArtifact
-  | SpotlightArtifact;
+  | SpotlightArtifact
+  | CandleArtifact
+  | TinArtifact
+  | ResearchArtifact;
 
 export type Job = {
   id: string;
@@ -306,7 +388,7 @@ export type FloorState = {
   selected: LineId;
 };
 
-const STORAGE_KEY = "hearthline-v1";
+const STORAGE_KEY = "hearthline-v2";
 
 export function hashString(value: string) {
   let hash = 2166136261;
@@ -348,12 +430,34 @@ function pushLog(log: LogEntry[], lineId: LineId, text: string, at: number) {
 function emptyPaused(): Record<LineId, boolean> {
   return {
     press: false,
+    candles: false,
+    supplements: false,
     booth: false,
-    marquee: false,
     sprites: false,
+    marquee: false,
     gazette: false,
-    spotlight: false,
+    research: false,
   };
+}
+
+export function routeResearch(brief: string): LineId {
+  const text = brief.toLowerCase();
+  if (/candle|wax|scent|wick/.test(text)) return "candles";
+  if (/supplement|vitamin|gummy|tin|mineral|capsule|citrus/.test(text)) return "supplements";
+  if (/music|song|techno|house|dj|loop|bpm|train/.test(text)) return "booth";
+  if (/sprite|pixel|game|character|asset|creature/.test(text)) return "sprites";
+  if (/thumbnail|youtube|frame|title|kiln|bold type/.test(text)) return "marquee";
+  if (/newsletter|gazette|issue|weekly/.test(text)) return "gazette";
+  return "press";
+}
+
+function handoffBrief(brief: string, target: LineId) {
+  const cleaned = brief
+    .replace(/^study\s+/i, "")
+    .replace(/,?\s*then brief.+$/i, "")
+    .trim();
+  if (cleaned.length >= 8) return cleaned.slice(0, 140);
+  return lineById(target).sample;
 }
 
 function freeze(job: Job, now: number): Job {
@@ -427,8 +531,9 @@ export function jobsFor(state: FloorState, lineId: LineId) {
 }
 
 export function pieceValue(piece: Piece) {
+  if (piece.artifact.kind === "research") return 0;
   const base =
-    piece.artifact.kind === "press"
+    piece.artifact.kind === "press" || piece.artifact.kind === "candles" || piece.artifact.kind === "supplements"
       ? piece.artifact.price
       : piece.artifact.kind === "marquee"
         ? 40
@@ -568,6 +673,55 @@ export function makeArtifact(lineId: LineId, brief: string, id: string): Artifac
     };
   }
 
+  if (lineId === "candles") {
+    const palettes: [string, string, string][] = [
+      ["#2a2118", "#f3e6c8", "#e07a3d"],
+      ["#1b3d2c", "#f6efe4", "#c9a36e"],
+      ["#3a1422", "#f7e7ea", "#e2b15a"],
+    ];
+    return {
+      kind: "candles",
+      title: name,
+      scent: name,
+      wax: /soy/i.test(brief) ? "Soy wax" : pick(rand, ["Soy wax", "Beeswax blend", "Coconut wax"]),
+      burn: pick(rand, ["40 hours", "45 hours", "50 hours"]),
+      price: 18 + Math.floor(rand() * 5) * 4,
+      colors: pick(rand, palettes),
+    };
+  }
+
+  if (lineId === "supplements") {
+    const palettes: [string, string, string][] = [
+      ["#10261c", "#e7f6ef", "#3ddec4"],
+      ["#1b2430", "#f4efe4", "#e2b15a"],
+      ["#241628", "#f7eef8", "#d0a0ff"],
+    ];
+    return {
+      kind: "supplements",
+      title: name,
+      front: name,
+      note: "Label art only. This is not a supplement, and it is not for sale.",
+      price: 16 + Math.floor(rand() * 4) * 4,
+      colors: pick(rand, palettes),
+    };
+  }
+
+  if (lineId === "research") {
+    const routedTo = routeResearch(brief);
+    const room = lineById(routedTo);
+    return {
+      kind: "research",
+      title: `Note for ${room.name}`,
+      findings: [
+        `The useful part of the note is “${clip(handoffBrief(brief, routedTo))}”.`,
+        `${room.agent} in ${room.name} can make that without leaving the station.`,
+        "Quill does not open a shop. The handoff is another brief on a belt.",
+      ],
+      handoff: handoffBrief(brief, routedTo),
+      routedTo,
+    };
+  }
+
   if (lineId === "gazette") {
     const day = new Date();
     const start = new Date(day.getFullYear(), 0, 0);
@@ -644,7 +798,7 @@ export function createSample(now: number): FloorState {
         id: "boot",
         at: now,
         lineId: "press",
-        text: "Terminal is up. Six zones are already carrying the sample briefs.",
+        text: "Terminal is up. Eight zones are already carrying the sample briefs.",
       },
     ],
     selected: "press",
@@ -698,8 +852,34 @@ export function tick(state: FloorState, now: number): FloorState {
       dock = [
         { id: job.id, lineId: line.id, brief: job.brief, finishedAt: now, artifact },
         ...dock,
-      ].slice(0, 16);
+      ].slice(0, 24);
       log = pushLog(log, line.id, `${line.agent} set “${artifact.title}” on the dock.`, now);
+      if (artifact.kind === "research") {
+        const target = artifact.routedTo;
+        const targetLine = lineById(target);
+        const waiting = jobs.filter((item) => item.lineId === target).length;
+        if (waiting < 6) {
+          const blocked = state.paused[target] || waiting > 0;
+          jobs = [
+            ...jobs,
+            {
+              id: uid(),
+              lineId: target,
+              brief: artifact.handoff,
+              stageIndex: 0,
+              stageStartedAt: blocked ? null : now,
+              frozenElapsed: null,
+              createdAt: now,
+            },
+          ];
+          log = pushLog(
+            log,
+            target,
+            `${line.agent} handed “${clip(artifact.handoff)}” to ${targetLine.agent}.`,
+            now,
+          );
+        }
+      }
     } catch {
       const fault = `${line.agent} jammed while packing this piece. Retry it, or take it off the belt.`;
       jobs = jobs.map((item, itemIndex) =>
@@ -872,7 +1052,7 @@ export function loadState(): FloorState | null {
       held: Boolean(parsed.held),
       paused,
       jobs,
-      dock: dock.slice(0, 16),
+      dock: dock.slice(0, 24),
       log: log.slice(0, 28),
       selected: isLineId(parsed.selected) ? parsed.selected : "press",
     };

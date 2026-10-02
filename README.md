@@ -1,6 +1,6 @@
 # Hearthline
 
-A production terminal you can watch. Six zones sit on one map. Specialists carry briefs along belts — print goods, a music loop, a title frame, a sprite bundle, a gazette, and a set of short notices — and finished pieces show up on the cameras.
+A command station you can watch. Eight rooms each have a terminal: research, printworks, candle labels, tin labels, a music booth called Vibes, sprite bundles, thumbnail frames, and a gazette. Research hands a tighter brief to the room that should make it. Finished pieces show up on the cameras.
 
 The autonomous output tally is the sum of prices on this screen. Nothing is listed for sale, and nothing leaves the browser.
 

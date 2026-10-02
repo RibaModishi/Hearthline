@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  LINE_IDS,
   STAGES,
   autonomousOutput,
   clearDock,
@@ -129,16 +130,27 @@ export function WorksApp() {
           <p className="text-[10px] tracking-[0.22em] text-primary">HEARTHLINE</p>
           <h1 className="text-xl tracking-wide text-foreground sm:text-2xl">PRODUCTION TERMINAL</h1>
           <p className="mt-1 max-w-xl text-sm leading-relaxed text-muted-foreground">
-            Six zones on one map. A brief rides the belt to the dock, and the tally on this screen is the only ledger.
+            Eight rooms, eight terminals. Research reads a niche and hands the brief to the room that can make it. The tally never leaves this screen.
           </p>
         </div>
         <div className="rounded-md border bg-card/80 px-4 py-3">
           <p className="text-[10px] tracking-[0.18em] text-primary">AUTONOMOUS OUTPUT</p>
           <p className="text-3xl leading-none text-foreground">{money}</p>
-          <p className="mt-2 text-xs text-muted-foreground">
-            {state.dock.length === 1 ? "1 piece" : `${state.dock.length} pieces`} · {moving} live
-          </p>
-          <p className="mt-1 max-w-xs text-xs text-muted-foreground">Priced on this terminal. Nothing is listed for sale.</p>
+          <dl className="mt-3 grid grid-cols-3 gap-2 text-xs">
+            <div>
+              <dt className="text-[10px] tracking-wide text-muted-foreground">REVENUE</dt>
+              <dd>{money}</dd>
+            </div>
+            <div>
+              <dt className="text-[10px] tracking-wide text-muted-foreground">ORDERS</dt>
+              <dd>{state.dock.length}</dd>
+            </div>
+            <div>
+              <dt className="text-[10px] tracking-wide text-muted-foreground">LIVE</dt>
+              <dd>{moving}</dd>
+            </div>
+          </dl>
+          <p className="mt-2 max-w-xs text-xs text-muted-foreground">Priced on this terminal. Nothing is listed for sale.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button
@@ -188,7 +200,9 @@ export function WorksApp() {
                         <span className="text-[10px] tracking-wide text-primary uppercase">{owner.name}</span>
                         <span className="mt-2 line-clamp-2 text-sm">{piece.artifact.title}</span>
                         <span className="mt-2 text-xs text-muted-foreground">
-                          {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(pieceValue(piece))}
+                          {pieceValue(piece) > 0
+                            ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(pieceValue(piece))
+                            : "Handoff"}
                         </span>
                       </button>
                     </li>
@@ -368,7 +382,5 @@ export function WorksApp() {
 }
 
 function LINES_MOVING(state: FloorState) {
-  return (["press", "booth", "marquee", "sprites", "gazette", "spotlight"] as const).filter(
-    (id) => lineActivity(state, id) === "working",
-  ).length;
+  return LINE_IDS.filter((id) => lineActivity(state, id) === "working").length;
 }

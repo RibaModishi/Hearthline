@@ -1,14 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type {
-  BoothArtifact,
-  GazetteArtifact,
-  MarqueeArtifact,
-  Piece,
-  PressArtifact,
-  SpotlightArtifact,
-  SpriteArtifact,
+import {
+  lineById,
+  type BoothArtifact,
+  type CandleArtifact,
+  type GazetteArtifact,
+  type MarqueeArtifact,
+  type Piece,
+  type PressArtifact,
+  type ResearchArtifact,
+  type SpotlightArtifact,
+  type SpriteArtifact,
+  type TinArtifact,
 } from "@/lib/works";
 
 function PressPoster({ artifact }: { artifact: PressArtifact }) {
@@ -329,6 +333,68 @@ function SpotlightView({ artifact }: { artifact: SpotlightArtifact }) {
   );
 }
 
+function CandleView({ artifact }: { artifact: CandleArtifact }) {
+  const [bg, paper, accent] = artifact.colors;
+  return (
+    <div className="grid gap-3">
+      <svg viewBox="0 0 200 260" className="w-full max-w-[220px] rounded-md" role="img" aria-label={artifact.title}>
+        <rect width="200" height="260" fill={bg} />
+        <rect x="28" y="36" width="144" height="188" fill={paper} />
+        <rect x="28" y="36" width="144" height="18" fill={accent} />
+        <text x="40" y="90" fill={bg} fontFamily="ui-monospace, monospace" fontSize="12">
+          {artifact.scent.slice(0, 22)}
+        </text>
+        <text x="40" y="130" fill={bg} fontFamily="Georgia, serif" fontSize="14">
+          {artifact.wax}
+        </text>
+        <text x="40" y="156" fill={bg} fontFamily="Georgia, serif" fontSize="14">
+          {artifact.burn}
+        </text>
+      </svg>
+      <p className="text-sm">${artifact.price} on the station ledger. The label is a picture, not a candle you can buy.</p>
+    </div>
+  );
+}
+
+function TinView({ artifact }: { artifact: TinArtifact }) {
+  const [bg, paper, accent] = artifact.colors;
+  return (
+    <div className="grid gap-3">
+      <svg viewBox="0 0 220 140" className="w-full rounded-md" role="img" aria-label={artifact.title}>
+        <rect width="220" height="140" rx="18" fill={bg} />
+        <rect x="16" y="16" width="188" height="108" rx="12" fill={paper} />
+        <rect x="16" y="16" width="188" height="16" fill={accent} />
+        <text x="28" y="70" fill={bg} fontFamily="ui-monospace, monospace" fontSize="13">
+          {artifact.front.slice(0, 24)}
+        </text>
+        <text x="28" y="96" fill={bg} fontFamily="Georgia, serif" fontSize="11">
+          Label only
+        </text>
+      </svg>
+      <p className="text-sm">{artifact.note}</p>
+    </div>
+  );
+}
+
+function ResearchView({ artifact }: { artifact: ResearchArtifact }) {
+  const room = lineById(artifact.routedTo);
+  return (
+    <div className="grid gap-3 text-sm">
+      <p>
+        Handed to {room.agent} in {room.name}.
+      </p>
+      <p className="text-muted-foreground">“{artifact.handoff}”</p>
+      <ul className="grid gap-2">
+        {artifact.findings.map((finding) => (
+          <li key={finding} className="rounded-md border px-3 py-2">
+            {finding}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export function PieceView({ piece }: { piece: Piece }) {
   const artifact = piece.artifact;
   if (artifact.kind === "press") return <PressView artifact={artifact} />;
@@ -336,5 +402,8 @@ export function PieceView({ piece }: { piece: Piece }) {
   if (artifact.kind === "marquee") return <MarqueeView artifact={artifact} />;
   if (artifact.kind === "sprites") return <SpriteView artifact={artifact} />;
   if (artifact.kind === "gazette") return <GazetteView artifact={artifact} />;
+  if (artifact.kind === "candles") return <CandleView artifact={artifact} />;
+  if (artifact.kind === "supplements") return <TinView artifact={artifact} />;
+  if (artifact.kind === "research") return <ResearchView artifact={artifact} />;
   return <SpotlightView artifact={artifact} />;
 }
