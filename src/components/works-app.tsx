@@ -16,9 +16,12 @@ import {
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  BOSS,
   LINE_IDS,
   STAGES,
   autonomousOutput,
+  bossKnowledge,
+  bossReview,
   clearDock,
   createSample,
   enqueue,
@@ -32,6 +35,7 @@ import {
   removeJob,
   retryJob,
   saveState,
+  standings,
   setHeld,
   setLinePaused,
   setSelected,
@@ -175,6 +179,55 @@ export function WorksApp() {
           </Button>
         </div>
       </header>
+
+      <section className="mx-auto mt-4 w-full max-w-6xl px-4">
+        <div className="rounded-xl border bg-card p-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-[10px] tracking-[0.18em] text-primary">{BOSS.name.toUpperCase()} · {BOSS.role.toUpperCase()}</p>
+              <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                Voss sees every room, pulls a jam, and puts the next brief on the belt that is last in the purse. The purse is the value of files finished here. It is not money in an account.
+              </p>
+            </div>
+            <Button type="button" variant="secondary" disabled={state.held} onClick={() => setState((current) => (current ? bossReview(current, Date.now(), true) : current))}>
+              Voss, walk the floor
+            </Button>
+          </div>
+          <ol className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            {standings(state).map((id, index) => {
+              const room = lineById(id);
+              const purse = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(state.scores[id] ?? 0);
+              return (
+                <li key={id}>
+                  <button type="button" onClick={() => select(id)} className="w-full rounded-md border px-3 py-2 text-left hover:bg-muted">
+                    <span className="text-[10px] tracking-wide text-primary">{index + 1}. {room.name}</span>
+                    <span className="mt-1 block text-sm">{room.agent} · {purse}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+          <ul className="mt-3 grid gap-1 text-xs text-muted-foreground">
+            {state.bossLog.slice(0, 3).map((note) => (
+              <li key={note.id}>
+                <span className="text-primary/80">{clock(note.at)}</span> {note.text}
+              </li>
+            ))}
+          </ul>
+          <details className="mt-3 text-sm">
+            <summary className="cursor-pointer text-muted-foreground">What Voss knows</summary>
+            <ul className="mt-2 grid gap-2">
+              {bossKnowledge(state).map((row) => (
+                <li key={row.id} className="rounded-md border px-3 py-2">
+                  <p className="text-sm">{row.agent} · {row.name} · {row.role}</p>
+                  <p className="text-xs text-muted-foreground">{row.status}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{row.knows}</p>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </div>
+      </section>
 
       <main className="mx-auto grid w-full max-w-6xl gap-4 px-4 py-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.78fr)]">
         <section className="grid gap-3">

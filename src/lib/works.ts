@@ -55,8 +55,8 @@ export const LINES: LineDef[] = [
     agent: "Nia",
     role: "Print goods",
     blurb: "Towels, cards, and small editions. The sheet is designed on this bench. It is not listed for sale.",
-    sample: "linen tea towels, indigo stripe, sold in pairs",
-    placeholder: "linen tea towels, indigo stripe, sold in pairs",
+    sample: "botanical indigo tea towel, two-color stripe, sold in pairs",
+    placeholder: "botanical indigo tea towel, two-color stripe, sold in pairs",
     colors: {
       wall: "#6d4630",
       floor: "#c9a36e",
@@ -80,8 +80,8 @@ export const LINES: LineDef[] = [
     agent: "Sol",
     role: "Music sketches",
     blurb: "Sol records a loop you can play. No streaming account is connected.",
-    sample: "night train in a minor key, unhurried",
-    placeholder: "night train in a minor key, unhurried",
+    sample: "deep house loop, 122 bpm, minor key, no vocals",
+    placeholder: "deep house loop, 122 bpm, minor key, no vocals",
     colors: {
       wall: "#3c4a78",
       floor: "#9aa3c4",
@@ -105,8 +105,8 @@ export const LINES: LineDef[] = [
     agent: "Remy",
     role: "Thumbnail frames",
     blurb: "One bold thumbnail from a title. Remy paints it here. Nobody is billed.",
-    sample: "how the night kiln is fired, bold type",
-    placeholder: "how the night kiln is fired, bold type",
+    sample: "how a night kiln is fired, bold type, one thumbnail",
+    placeholder: "how a night kiln is fired, bold type, one thumbnail",
     colors: {
       wall: "#7a3148",
       floor: "#e0b2b4",
@@ -130,8 +130,8 @@ export const LINES: LineDef[] = [
     agent: "Pix",
     role: "Game bits",
     blurb: "A bundle of six little characters, drawn pixel by pixel.",
-    sample: "market-stall creatures, six of them",
-    placeholder: "market-stall creatures, six of them",
+    sample: "six market-stall creatures, one palette, game-ready",
+    placeholder: "six market-stall creatures, one palette, game-ready",
     colors: {
       wall: "#2d6a4e",
       floor: "#a9c8a2",
@@ -155,8 +155,8 @@ export const LINES: LineDef[] = [
     agent: "June",
     role: "The weekly",
     blurb: "A short issue: a headline, a dek, and three notes from the floor.",
-    sample: "the week the indigo ran short",
-    placeholder: "the week the indigo ran short",
+    sample: "what the dock finished this week",
+    placeholder: "what the dock finished this week",
     colors: {
       wall: "#8a6232",
       floor: "#ead7a8",
@@ -180,8 +180,8 @@ export const LINES: LineDef[] = [
     agent: "Wynn",
     role: "Candle labels",
     blurb: "A label for scent, wax, and burn time. The candle is a picture, not a listing.",
-    sample: "cedar and smoke, soy wax, evening burn",
-    placeholder: "cedar and smoke, soy wax, evening burn",
+    sample: "cedar and smoke soy candle, forty hour label",
+    placeholder: "cedar and smoke soy candle, forty hour label",
     colors: {
       wall: "#8a5a28",
       floor: "#e7c27a",
@@ -204,9 +204,9 @@ export const LINES: LineDef[] = [
     name: "Tin room",
     agent: "Ash",
     role: "Tin labels",
-    blurb: "A tin label only. This room does not make a supplement you can take.",
-    sample: "citrus peel tin, evening, label only",
-    placeholder: "citrus peel tin, evening, label only",
+    blurb: "A tea or spice tin label only. This room does not make anything you swallow.",
+    sample: "citrus peel tea tin, evening blend, label only",
+    placeholder: "citrus peel tea tin, evening blend, label only",
     colors: {
       wall: "#2a6b62",
       floor: "#9fd0c4",
@@ -230,8 +230,8 @@ export const LINES: LineDef[] = [
     agent: "Quill",
     role: "Briefs",
     blurb: "Quill reads a niche and hands a tighter brief to the room that should make it.",
-    sample: "study linen prints, then brief the printworks",
-    placeholder: "study linen prints, then brief the printworks",
+    sample: "study linen prints people already buy, then brief the printworks",
+    placeholder: "study linen prints people already buy, then brief the printworks",
     colors: {
       wall: "#3d5a8a",
       floor: "#b7c7e6",
@@ -379,6 +379,12 @@ export type LogEntry = {
   text: string;
 };
 
+export type BossNote = {
+  id: string;
+  at: number;
+  text: string;
+};
+
 export type FloorState = {
   held: boolean;
   paused: Record<LineId, boolean>;
@@ -386,9 +392,70 @@ export type FloorState = {
   dock: Piece[];
   log: LogEntry[];
   selected: LineId;
+  /** Lifetime file value per room. This is not money received. */
+  scores: Record<LineId, number>;
+  /** Next playbook brief index per room. */
+  issued: Record<LineId, number>;
+  bossLog: BossNote[];
 };
 
-const STORAGE_KEY = "hearthline-v2";
+export const BOSS = {
+  name: "Voss",
+  role: "Station chief",
+};
+
+export const PLAYBOOK: Record<LineId, readonly string[]> = {
+  press: [
+    "botanical indigo tea towel, two-color stripe, sold in pairs",
+    "rust block-print kitchen linen, set of two",
+    "black and cream dot scarf square, small edition",
+  ],
+  marquee: [
+    "how a night kiln is fired, bold type, one thumbnail",
+    "three mistakes on a first shop listing, bold type",
+    "sixty-second studio tour, high contrast title",
+  ],
+  sprites: [
+    "six market-stall creatures, one palette, game-ready",
+    "six tiny shopkeepers, side view, shared palette",
+    "six lantern spirits, one sheet, 16-pixel scale",
+  ],
+  booth: [
+    "deep house loop, 122 bpm, minor key, no vocals",
+    "late techno, 128 bpm, dry kick, short bass",
+    "unhurried night train, minor key, four bars",
+  ],
+  candles: [
+    "cedar and smoke soy candle, forty hour label",
+    "linen and fig, coconut wax, evening burn",
+    "black tea and orange peel, small tin label",
+  ],
+  supplements: [
+    "citrus peel tea tin, evening blend, label only",
+    "smoked salt tin, small batch, label only",
+    "cocoa husk tea tin, label only",
+  ],
+  gazette: [
+    "what the dock finished this week",
+    "three files worth listing, and one to skip",
+    "the week the indigo ran short",
+  ],
+  research: [
+    "study linen prints people already buy, then brief the printworks",
+    "study thumbnail titles that get the click, then brief frames",
+    "study small pixel creature packs, then brief the sprite bay",
+  ],
+};
+
+const STORAGE_KEY = "hearthline-v3";
+
+function emptyScores(): Record<LineId, number> {
+  return { press: 0, candles: 0, supplements: 0, booth: 0, sprites: 0, marquee: 0, gazette: 0, research: 0 };
+}
+
+function emptyIssued(): Record<LineId, number> {
+  return { press: 0, candles: 0, supplements: 0, booth: 0, sprites: 0, marquee: 0, gazette: 0, research: 0 };
+}
 
 export function hashString(value: string) {
   let hash = 2166136261;
@@ -802,6 +869,24 @@ export function createSample(now: number): FloorState {
       },
     ],
     selected: "press",
+    scores: emptyScores(),
+    issued: {
+      press: 1,
+      candles: 1,
+      supplements: 1,
+      booth: 1,
+      sprites: 1,
+      marquee: 1,
+      gazette: 1,
+      research: 1,
+    },
+    bossLog: [
+      {
+        id: "boss-boot",
+        at: now,
+        text: "Voss has the floor. Every belt, jam, and purse is visible from this desk.",
+      },
+    ],
   };
 }
 
@@ -810,6 +895,7 @@ export function tick(state: FloorState, now: number): FloorState {
   let jobs = state.jobs;
   let dock = state.dock;
   let log = state.log;
+  let scores = state.scores;
   let changed = false;
 
   for (const line of LINES) {
@@ -849,10 +935,9 @@ export function tick(state: FloorState, now: number): FloorState {
     try {
       const artifact = makeArtifact(line.id, job.brief, job.id);
       jobs = jobs.filter((_, itemIndex) => itemIndex !== index);
-      dock = [
-        { id: job.id, lineId: line.id, brief: job.brief, finishedAt: now, artifact },
-        ...dock,
-      ].slice(0, 24);
+      const piece: Piece = { id: job.id, lineId: line.id, brief: job.brief, finishedAt: now, artifact };
+      dock = [piece, ...dock].slice(0, 24);
+      scores = { ...scores, [line.id]: roundMoney((scores[line.id] ?? 0) + pieceValue(piece)) };
       log = pushLog(log, line.id, `${line.agent} set “${artifact.title}” on the dock.`, now);
       if (artifact.kind === "research") {
         const target = artifact.routedTo;
@@ -872,6 +957,7 @@ export function tick(state: FloorState, now: number): FloorState {
               createdAt: now,
             },
           ];
+          scores = { ...scores, research: roundMoney((scores.research ?? 0) + 4) };
           log = pushLog(
             log,
             target,
@@ -889,8 +975,123 @@ export function tick(state: FloorState, now: number): FloorState {
     }
   }
 
-  if (!changed) return state;
-  return { ...state, jobs, dock, log };
+  const progressed = changed ? { ...state, jobs, dock, log, scores } : state;
+  return bossReview(progressed, now);
+}
+
+function roundMoney(value: number) {
+  return Math.round(value * 100) / 100;
+}
+
+export function standings(state: FloorState) {
+  return [...LINE_IDS].sort((a, b) => (state.scores[b] ?? 0) - (state.scores[a] ?? 0) || a.localeCompare(b));
+}
+
+export function bossKnowledge(state: FloorState) {
+  return LINE_IDS.map((id) => {
+    const line = lineById(id);
+    const job = state.jobs.find((item) => item.lineId === id);
+    const latest = state.dock.find((piece) => piece.lineId === id);
+    const status = job?.fault ? `Jammed: ${job.brief}` : job ? job.brief : "Belt clear";
+    return {
+      id,
+      agent: line.agent,
+      name: line.name,
+      role: line.role,
+      status,
+      purse: state.scores[id] ?? 0,
+      knows: latest ? `Last file “${latest.artifact.title}”. ${line.blurb}` : line.blurb,
+    };
+  });
+}
+
+function nextPlaybookBrief(state: FloorState, lineId: LineId, issued: Record<LineId, number>) {
+  const book = PLAYBOOK[lineId];
+  const start = issued[lineId] ?? 0;
+  for (let offset = 0; offset < book.length; offset += 1) {
+    const brief = book[(start + offset) % book.length] ?? book[0];
+    const already = state.jobs.some((job) => job.lineId === lineId && job.brief === brief);
+    if (!already) {
+      issued[lineId] = start + offset + 1;
+      return brief;
+    }
+  }
+  issued[lineId] = start + 1;
+  return book[start % book.length] ?? book[0];
+}
+
+export function bossReview(state: FloorState, now: number, force = false): FloorState {
+  if (state.held) return state;
+  let jobs = state.jobs;
+  let log = state.log;
+  let issued = state.issued;
+  const notes: string[] = [];
+
+  for (const job of [...jobs]) {
+    if (!job.fault) continue;
+    const line = lineById(job.lineId);
+    if (/\bjam\b/i.test(job.brief)) {
+      jobs = jobs.filter((item) => item.id !== job.id);
+      const text = `${BOSS.name} pulled ${line.agent}'s brief. The word jam makes pack fail on purpose.`;
+      notes.push(text);
+      log = pushLog(log, job.lineId, text, now);
+      continue;
+    }
+    jobs = jobs.map((item) =>
+      item.id === job.id ? { ...item, fault: undefined, stageStartedAt: now, frozenElapsed: null } : item,
+    );
+    const text = `${BOSS.name} saw ${line.agent} jam and sent the pack through again.`;
+    notes.push(text);
+    log = pushLog(log, job.lineId, text, now);
+  }
+
+  const idle = LINE_IDS.filter((id) => !state.paused[id] && !jobs.some((job) => job.lineId === id)).sort(
+    (a, b) => (state.scores[a] ?? 0) - (state.scores[b] ?? 0) || a.localeCompare(b),
+  );
+
+  if (idle.length > 0) issued = { ...issued };
+  for (const id of idle) {
+    const waiting = jobs.filter((job) => job.lineId === id).length;
+    if (waiting >= 6) continue;
+    const brief = nextPlaybookBrief(state, id, issued);
+    const blocked = waiting > 0;
+    jobs = [
+      ...jobs,
+      {
+        id: uid(),
+        lineId: id,
+        brief,
+        stageIndex: 0,
+        stageStartedAt: blocked ? null : now,
+        frozenElapsed: null,
+        createdAt: now,
+      },
+    ];
+  }
+
+  if (idle.length > 0) {
+    const ranked = [...LINE_IDS].sort((a, b) => (state.scores[b] ?? 0) - (state.scores[a] ?? 0));
+    const lead = lineById(ranked[0] ?? "press");
+    const last = lineById(ranked[ranked.length - 1] ?? "press");
+    const fed = idle.map((id) => lineById(id).agent).join(", ");
+    notes.push(
+      `${BOSS.name} fed ${fed}. ${lead.name} leads the purse. ${last.name} is last, so that belt was filled first.`,
+    );
+    log = pushLog(log, idle[0] ?? "press", notes[notes.length - 1] ?? "", now);
+  } else if (force && notes.length === 0) {
+    const ranked = [...LINE_IDS].sort((a, b) => (state.scores[b] ?? 0) - (state.scores[a] ?? 0));
+    const lead = lineById(ranked[0] ?? "press");
+    notes.push(`${BOSS.name} walked the floor. Every belt is busy. ${lead.name} still leads the purse.`);
+  }
+
+  if (notes.length === 0 && issued === state.issued && jobs === state.jobs) return state;
+  return {
+    ...state,
+    jobs,
+    log,
+    issued,
+    bossLog: [...notes.map((text) => ({ id: uid(), at: now, text })), ...state.bossLog].slice(0, 12),
+  };
 }
 
 export function enqueue(
@@ -1048,6 +1249,17 @@ export function loadState(): FloorState | null {
     const log = parsed.log.filter((entry): entry is LogEntry => {
       return Boolean(entry && isLineId(entry.lineId) && typeof entry.text === "string");
     });
+    const scores = emptyScores();
+    const issued = emptyIssued();
+    if (parsed.scores && typeof parsed.scores === "object") {
+      for (const id of LINE_IDS) scores[id] = Number(parsed.scores[id]) || 0;
+    }
+    if (parsed.issued && typeof parsed.issued === "object") {
+      for (const id of LINE_IDS) issued[id] = Number(parsed.issued[id]) || 0;
+    }
+    const bossLog = Array.isArray(parsed.bossLog)
+      ? parsed.bossLog.filter((note): note is BossNote => Boolean(note && typeof note.text === "string" && typeof note.id === "string")).slice(0, 12)
+      : [];
     return {
       held: Boolean(parsed.held),
       paused,
@@ -1055,6 +1267,9 @@ export function loadState(): FloorState | null {
       dock: dock.slice(0, 24),
       log: log.slice(0, 28),
       selected: isLineId(parsed.selected) ? parsed.selected : "press",
+      scores,
+      issued,
+      bossLog,
     };
   } catch {
     return null;
